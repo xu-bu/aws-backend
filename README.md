@@ -6,7 +6,7 @@ This repository contains the codes of the [Backend Master Class](https://bit.ly/
 
 # Deploy
 1. Go to AWS, create a free-tier eligible instance and a Amazon ECR named simplebank. Go to deploy.yml, change aws-region and add secrets in github. 
-2. Go to IAM in AWS and create a new user named github-ci and add it to a new group named deployment which uses AmazonElasticContainerRegistryPublicFullAccess strategy.
+2. Go to IAM in AWS and create a new user named github-ci and add it to a new group named deployment which uses AmazonContainerRegistryPublicFullAccess strategy.
 3. Enter the overview tab of this user. Open the Security credentials tab, and then choose Create access key. Paste access key ID and secret to create a AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY in github actions.
 
 
