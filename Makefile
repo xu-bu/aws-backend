@@ -1,4 +1,5 @@
-DB_URL=postgresql://root:secret@localhost:5432/simple_bank?sslmode=disable
+CC=gcc
+DB_URL=postgresql://root:lZJNPyqFPazwqI18ZZ1T@simple-bank.ci0bw1ucyhkc.eu-west-2.rds.amazonaws.com:5432/simple_bank
 
 network:
 	docker network create bank-network
@@ -15,7 +16,7 @@ createdb:
 dropdb:
 	docker exec -it postgres dropdb simple_bank
 
-migrateup:
+	:
 	migrate -path db/migration -database "$(DB_URL)" -verbose up
 
 migrateup1:

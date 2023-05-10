@@ -4,10 +4,14 @@ This repository contains the codes of the [Backend Master Class](https://bit.ly/
 
 ![Backend master class](backend-master.png)
 
-# Deploy
+# Build and push image
 1. Go to AWS, create a free-tier eligible instance and a Amazon ECR named simplebank. Go to deploy.yml, change aws-region and add secrets in github. 
 2. Go to IAM in AWS and create a new user named github-ci and add it to a new group named deployment which uses AmazonContainerRegistryPublicFullAccess strategy.
 3. Enter the overview tab of this user. Open the Security credentials tab, and then choose Create access key. Paste access key ID and secret to create a AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY in github actions.
+
+# Create and connect a production DB on AWS RDS
+Install goland migrate and then follow the tutorial: `https://www.youtube.com/watch?v=0EaG3T4Q5fQ`. You may encounter a failure that migrate is conflicted with nvm's migrate, just go to environment variables and change the path of golang migrate upon nvm's.
+Finally, change the DB_SOURCE in Makefile.
 
 
 ## Simple bank service
