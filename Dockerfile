@@ -15,5 +15,6 @@ COPY db/migration ./db/migration
 
 EXPOSE 8080
 RUN chmod +x /app/start.sh
+RUN go get -u -d github.com/golang-migrate/migrate github.com/lib/pq
 CMD [ "/app/main" ]
 ENTRYPOINT [ "/app/start.sh" ]
