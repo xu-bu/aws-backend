@@ -27,6 +27,9 @@ migrateupLocal:
 migratedownLocal:
 	migrate -path db/migration -database "$(LOCAL_DB_URL)" -verbose down
 
+migrateup:
+	migrate -path db/migration -database "$(DB_URL)" -verbose up
+
 migrateup1:
 	migrate -path db/migration -database "$(DB_URL)" -verbose up 1
 

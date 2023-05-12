@@ -44,7 +44,8 @@ network create bank-network
 docker network connect bank-network postgres12
 docker run --name simplebank --network bank-network -p 8080:8080 -e GIN_MODE=release -e DB_SOURCE="postgresql://root:secret@postgres/simple_bank?sslmode=disable" simplebank:latest
 ```
-Now, the server is running. Since it's release mode, there will be no text before we send a request.
+Now, the server is running. Since it's release mode, there will be no text before we send a request. 
+If wanna change Dockerfile and test it again, you need to delete simplebank container and run the code above again.
 
 # Create ECR and user on AWS
 1. Go to AWS, create a free-tier eligible instance and a Amazon ECR named simplebank. Go to deploy.yml, change aws-region and add secrets in github. 
