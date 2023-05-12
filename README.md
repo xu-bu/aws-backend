@@ -63,7 +63,7 @@ docker run --name simplebank --network bank-network -p 8080:8080 -e GIN_MODE=rel
 docker login
 aws ecr get-login-password | docker login --username AWS --password-stdin 889406091633.dkr.ecr.eu-west-2.amazonaws.com
 docker pull [ECR image name]
-docker run --name simplebank --network bank-network -p 8080:8080 -e GIN_MODE=release -e DB_SOURCE="postgresql://root:lZJNPyqFPazwqI18ZZ1T@simple-bank.ci0bw1ucyhkc.eu-west-2.rds.amazonaws.com:5432/simple_bank" simplebank:latest
+docker run --name simplebank --network bank-network -p 8080:8080 -e GIN_MODE=release simplebank:latest
 ``` 
 
 # Deploy to kubernetes cluster
