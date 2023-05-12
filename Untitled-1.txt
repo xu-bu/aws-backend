@@ -1,1 +1,2 @@
-docker run --name simplebank --network bank-network -p 8080:8080 -e GIN_MODE=release -e DB_SOURCE="postgresql://root:secret@postgres/simple_bank?sslmode=disable" test:latest
+docker login -u AWS -p AKIA46FF36FY36CP6WFF -e none 889406091633.dkr.ecr.eu-west-2.amazonaws.com
+aws ecr get-login-password | docker login --username AWS --password-stdin 889406091633.dkr.ecr.eu-west-2.amazonaws.com
