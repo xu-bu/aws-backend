@@ -55,15 +55,25 @@ If wanna change Dockerfile and test it again, you need to delete simplebank cont
 
 # Create and connect a production DB on AWS RDS
 Install goland migrate and then follow the tutorial: `https://www.youtube.com/watch?v=0EaG3T4Q5fQ`. You may encounter a failure that migrate is conflicted with nvm's migrate, just go to environment variables and change the path of golang migrate upon nvm's.
-Finally, change the DB_SOURCE in Makefile.
+Finally, change the DB_SOURCE in Makefile and now we can run 
+```
+docker build -t simplebank .
+docker run --name simplebank -p 8080:8080 -e GIN_MODE=release 
+```
+to test it (since now we use the remote postgres and its addres is already declared in app.env, we don't need to specify it by -e DB_SOURCE=XXXX). It's supposed to see a new record in users table of remote Postgres database when send a create user request.
 
-# Pull the image from ECR and test it locally
-docker run --name simplebank --network bank-network -p 8080:8080 -e GIN_MODE=release simplebank:latest
+# Use ECR image
+After push, github will push image to ECR. Copy its URI to get [ECR image name].
+## Auth
 ```
 docker login
-aws ecr get-login-password | docker login --username AWS --password-stdin 889406091633.dkr.ecr.eu-west-2.amazonaws.com
+aws ecr get-login-password | docker login --username AWS --password-stdin [ECR image name]
 docker pull [ECR image name]
-docker run --name simplebank --network bank-network -p 8080:8080 -e GIN_MODE=release simplebank:latest
+```
+Notice the token could be expired, then we need to auth again.
+## Test ECR image
+```
+docker run --name simplebank -p 8080:8080 -e GIN_MODE=release [ECR image name]
 ``` 
 
 # Deploy to kubernetes cluster
