@@ -1,7 +1,7 @@
 version: "3.9"
 services:
   postgres:
-    image: postgres:14-alpine
+    image: postgres:12-alpine
     environment:
       - POSTGRES_USER=root
       - POSTGRES_PASSWORD=secret
@@ -16,11 +16,9 @@ services:
       - DB_SOURCE=postgresql://root:secret@postgres:5432/simple_bank?sslmode=disable
     depends_on:
       - postgres
-    entrypoint:
-      [
-        "/app/wait-for.sh",
-        "postgres:5432",
-        "--",
-        "/app/start.sh"
-      ]
+    # wait for postgres service is ready
+    # entrypoint: [ "/app/wait-for.sh", "postgres:5432", "--", "/app/start.sh" ]
+    entrypoint: 
+      sh -c "chmod +x /app/wait-for.sh && chmod +x /app/start.sh && exec /app/wait-for.sh postgres:5432 -- /app/start.sh"
+    # since we use entrypoint, the CMD in Dockerfile is ignored, we should add that command here again.
     command: [ "/app/main" ]

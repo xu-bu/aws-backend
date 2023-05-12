@@ -4,159 +4,57 @@ This repository contains the codes of the [Backend Master Class](https://bit.ly/
 
 ![Backend master class](backend-master.png)
 
-# Build and push image
+# Deploy and test locally
+Run 
+
+`docker run --name postgres12 -p 5432:5432 -e POSTGRES_USER=root -e POSTGRES_PASSWORD=secret -d postgres:12-alpine` 
+
+to create postgres container, the environment variables are used for connect this database. To test if it's successful, we can run 
+
+`docker exec -it postgres12 psql -U root` 
+
+enter the container and run `select now();` to see the current time.
+
+Then open tablePlus to connect this local postgres database, using the environment variables above:
+```
+Name=postgres12
+Host=127.0.0.1
+Port=5432
+User=root
+Password=secret
+Database=root
+```
+
+Now we got an empty database, to create tables, run `make migrate migrateupLocal` then F5 fresh tablePlus and we are able to see all the tables.
+To run server, run `make server` and go to runAPI, create a new POST, set URL as http://localhost:8080/users and choose json for body:
+```
+{
+    "username":"alice1",
+    "password":"orange",
+    "full_name":"Alice",
+    "email":"alice1@gmail.com"
+}
+```
+Then we are able to see a user created in tablePlus.
+
+# Build image and test it locally:
+## Setup backend and postgres manually (not recommended)
+```
+build -t simplebank .
+network create bank-network
+docker network connect bank-network postgres12
+docker run --name simplebank --network bank-network -p 8080:8080 -e GIN_MODE=release -e DB_SOURCE="postgresql://root:secret@postgres/simple_bank?sslmode=disable" simplebank:latest
+```
+Now, the server is running. Since it's release mode, there will be no text before we send a request.
+## Setup via docker-compose
+
+# Create ECR and user on AWS
 1. Go to AWS, create a free-tier eligible instance and a Amazon ECR named simplebank. Go to deploy.yml, change aws-region and add secrets in github. 
 2. Go to IAM in AWS and create a new user named github-ci and add it to a new group named deployment which uses AmazonContainerRegistryPublicFullAccess strategy.
 3. Enter the overview tab of this user. Open the Security credentials tab, and then choose Create access key. Paste access key ID and secret to create a AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY in github actions.
 
-# Create and connect a production DB on AWS RDS
-Install goland migrate and then follow the tutorial: `https://www.youtube.com/watch?v=0EaG3T4Q5fQ`. You may encounter a failure that migrate is conflicted with nvm's migrate, just go to environment variables and change the path of golang migrate upon nvm's.
-Finally, change the DB_SOURCE in Makefile.
 
-
-## Simple bank service
-
-The service that we’re going to build is a simple bank. It will provide APIs for the frontend to do following things:
-
-1. Create and manage bank accounts, which are composed of owner’s name, balance, and currency.
-2. Record all balance changes to each of the account. So every time some money is added to or subtracted from the account, an account entry record will be created.
-3. Perform a money transfer between 2 accounts. This should happen within a transaction, so that either both accounts’ balance are updated successfully or none of them are.
-
-## Setup local development
-
-### Install tools
-
-- [Docker desktop](https://www.docker.com/products/docker-desktop)
-- [TablePlus](https://tableplus.com/)
-- [Golang](https://golang.org/)
-- [Homebrew](https://brew.sh/)
-- [Migrate](https://github.com/golang-migrate/migrate/tree/master/cmd/migrate)
-
-    ```bash
-    brew install golang-migrate
-    ```
-
-- [DB Docs](https://dbdocs.io/docs)
-
-    ```bash
-    npm install -g dbdocs
-    dbdocs login
-    ```
-
-- [DBML CLI](https://www.dbml.org/cli/#installation)
-
-    ```bash
-    npm install -g @dbml/cli
-    dbml2sql --version
-    ```
-
-- [Sqlc](https://github.com/kyleconroy/sqlc#installation)
-
-    ```bash
-    brew install sqlc
-    ```
-
-- [Gomock](https://github.com/golang/mock)
-
-    ``` bash
-    go install github.com/golang/mock/mockgen@v1.6.0
-    ```
-
-### Setup infrastructure
-
-- Create the bank-network
-
-    ``` bash
-    make network
-    ```
-
-- Start postgres container:
-
-    ```bash
-    make postgres
-    ```
-
-- Create simple_bank database:
-
-    ```bash
-    make createdb
-    ```
-
-- Run db migration up all versions:
-
-    ```bash
-    make migrateup
-    ```
-
-- Run db migration up 1 version:
-
-    ```bash
-    make migrateup1
-    ```
-
-- Run db migration down all versions:
-
-    ```bash
-    make migratedown
-    ```
-
-- Run db migration down 1 version:
-
-    ```bash
-    make migratedown1
-    ```
-
-### Documentation
-
-- Generate DB documentation:
-
-    ```bash
-    make db_docs
-    ```
-
-- Access the DB documentation at [this address](https://dbdocs.io/techschool.guru/simple_bank). Password: `secret`
-
-### How to generate code
-
-- Generate schema SQL file with DBML:
-
-    ```bash
-    make db_schema
-    ```
-
-- Generate SQL CRUD with sqlc:
-
-    ```bash
-    make sqlc
-    ```
-
-- Generate DB mock with gomock:
-
-    ```bash
-    make mock
-    ```
-
-- Create a new db migration:
-
-    ```bash
-    make new_migration name=<migration_name>
-    ```
-
-### How to run
-
-- Run server:
-
-    ```bash
-    make server
-    ```
-
-- Run test:
-
-    ```bash
-    make test
-    ```
-
-## Deploy to kubernetes cluster
+# Deploy to kubernetes cluster
 
 - [Install nginx ingress controller](https://kubernetes.github.io/ingress-nginx/deploy/#aws):
 
@@ -169,3 +67,20 @@ The service that we’re going to build is a simple bank. It will provide APIs f
     ```bash
     kubectl apply -f https://github.com/jetstack/cert-manager/releases/download/v1.4.0/cert-manager.yaml
     ```
+
+# Create and connect a production DB on AWS RDS
+Install goland migrate and then follow the tutorial: `https://www.youtube.com/watch?v=0EaG3T4Q5fQ`. You may encounter a failure that migrate is conflicted with nvm's migrate, just go to environment variables and change the path of golang migrate upon nvm's.
+Finally, change the DB_SOURCE in Makefile.
+
+
+# Simple bank service
+
+The service that we’re going to build is a simple bank. It will provide APIs for the frontend to do following things:
+
+1. Create and manage bank accounts, which are composed of owner’s name, balance, and currency.
+2. Record all balance changes to each of the account. So every time some money is added to or subtracted from the account, an account entry record will be created.
+3. Perform a money transfer between 2 accounts. This should happen within a transaction, so that either both accounts’ balance are updated successfully or none of them are.
+
+# Reference
+Fork repository：https://github.com/xu-bu/simplebank-Fork
+Tutorial video: https://www.youtube.com/playlist?list=PLy_6D98if3ULEtXtNSY_2qN21VCKgoQAE
