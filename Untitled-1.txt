@@ -1,1 +1,3 @@
 docker run --name simplebank -p 8080:8080 -e GIN_MODE=release 889406091633.dkr.ecr.eu-west-2.amazonaws.com/simplebank:3d1857c9cc5727d4ae65420894cdadeab984990f
+
+docker run --name simplebank test:latest

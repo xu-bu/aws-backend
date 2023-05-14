@@ -6,24 +6,28 @@ FROM golang:1.16-alpine3.13 AS builder
 WORKDIR /app
 COPY . .
 RUN go build -o main main.go
-# install curl
+install curl
 RUN apk --no-cache add curl
 RUN curl -L https://github.com/golang-migrate/migrate/releases/download/v4.14.1/migrate.linux-amd64.tar.gz | tar xvz
 
 # "FROM alpine:3.13" to point out it's Run stage
 FROM alpine:3.13
 WORKDIR /app
+
 COPY --from=builder /app/main .
 COPY --from=builder /app/migrate.linux-amd64 ./migrate
-COPY app.env .
 COPY start.sh .
 COPY wait-for.sh .
 RUN chmod +x /app/start.sh
 RUN chmod +x /app/wait-for.sh
 COPY db/migration ./migration
-RUN source /app/app.env
 
 EXPOSE 8080
 
-CMD [ "/app/main" ]
 ENTRYPOINT [ "/app/start.sh" ]
+CMD [ "/app/main" ]
+# CMD ["/bin/sh", "-c", "while true; do sleep 1; done"]
+
+
+
+

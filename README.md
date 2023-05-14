@@ -73,7 +73,7 @@ docker pull [ECR image name]
 Notice the token could be expired, then we need to auth again.
 ## Test ECR image
 ```
-docker run --name simplebank -p 8080:8080 -e GIN_MODE=release [ECR image name]
+docker run --name simplebank -p 8080:8080 -e GIN_MODE=release --env-file=./app.env --env-file=./app.env [ECR image name]
 ``` 
 
 # Deploy to kubernetes cluster
