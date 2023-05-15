@@ -67,7 +67,7 @@ After push, github will push image to ECR. Copy its URI to get [ECR image name].
 ## Auth
 ```
 docker login
-aws ecr get-login-password | docker login --username AWS --password-stdin [ECR repository name]
+aws ecr get-login-password | docker login --username AWS --password-stdin 889406091633.dkr.ecr.eu-west-2.amazonaws.com/simplebank
 ```
 Notice that the token could be expired, then we need to auth again.
 ## Test ECR image
