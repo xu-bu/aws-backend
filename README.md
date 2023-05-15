@@ -62,18 +62,17 @@ docker run --name simplebank -p 8080:8080 -e GIN_MODE=release
 ```
 to test it (since now we use the remote postgres and its addres is already declared in app.env, we don't need to specify it by -e DB_SOURCE=XXXX). It's supposed to see a new record in users table of remote Postgres database when send a create user request.
 
-# Use ECR image
+# Use ECR image locally
 After push, github will push image to ECR. Copy its URI to get [ECR image name].
 ## Auth
 ```
 docker login
-aws ecr get-login-password | docker login --username AWS --password-stdin [ECR image name]
-docker pull [ECR image name]
+aws ecr get-login-password | docker login --username AWS --password-stdin [ECR repository name]
 ```
-Notice the token could be expired, then we need to auth again.
+Notice that the token could be expired, then we need to auth again.
 ## Test ECR image
 ```
-docker run --name simplebank -p 8080:8080 -e GIN_MODE=release --env-file=./app.env --env-file=./app.env [ECR image name]
+docker run --name simplebank -p 8080:8080 -e GIN_MODE=release --env-file=./app.env --env-file=./app.env [ECR URI]
 ``` 
 
 # Deploy to kubernetes cluster
