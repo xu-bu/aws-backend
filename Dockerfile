@@ -9,8 +9,7 @@ RUN go build -o main main.go
 # install curl
 RUN apk --no-cache add curl
 RUN curl -L https://github.com/golang-migrate/migrate/releases/download/v4.14.1/migrate.linux-amd64.tar.gz | tar xvz
-RUN apk update
-RUN apk add nano
+
 
 # "FROM alpine:3.13" to point out it's Run stage
 FROM alpine:3.13
@@ -24,6 +23,8 @@ COPY wait-for.sh .
 RUN chmod +x /app/start.sh
 RUN chmod +x /app/wait-for.sh
 COPY db/migration ./migration
+RUN apk update
+RUN apk add nano
 
 EXPOSE 8080
 
