@@ -2,7 +2,8 @@
 # divide it into 2 stages to reduce the size of image
 # Build stage
 # use "AS builder" to point out it's build stage
-FROM golang:1.16-alpine3.13 AS builder 
+FROM golang:1.19-alpine3.16 AS builder 
+# FROM golang:1.19-alpine3.16
 WORKDIR /app
 COPY . .
 RUN go build -o main main.go
@@ -11,8 +12,8 @@ RUN apk --no-cache add curl
 RUN curl -L https://github.com/golang-migrate/migrate/releases/download/v4.14.1/migrate.linux-amd64.tar.gz | tar xvz
 
 
-# "FROM alpine:3.13" to point out it's Run stage
-FROM alpine:3.13
+# Run stage
+FROM alpine:3.16
 WORKDIR /app
 
 COPY --from=builder /app/main .
