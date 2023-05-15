@@ -37,9 +37,6 @@ jobs:
     - name: Test app.env
       run: cat app.env
 
-    - name: Test jq
-      run: jq --version
-
     - name: Build, tag, and push image to Amazon ECR
       env:
         ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}

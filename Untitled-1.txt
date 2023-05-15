@@ -1,1 +1,5 @@
 docker run --name simplebank -p 8080:8080 -e GIN_MODE=release --env-file=./app.env 889406091633.dkr.ecr.eu-west-2.amazonaws.com/simplebank:latest
+
+docker run --name simplebank -p 8080:8080 -e GIN_MODE=release 889406091633.dkr.ecr.eu-west-2.amazonaws.com/simplebank:latest
+
+docker run -it -p 8080:808 -e GIN_MODE=release --entrypoint /bin/sh 889406091633.dkr.ecr.eu-west-2.amazonaws.com/simplebank:latest
