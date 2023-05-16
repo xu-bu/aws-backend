@@ -3,7 +3,6 @@
 # Build stage
 # use "AS builder" to point out it's build stage
 FROM golang:1.19-alpine3.16 AS builder 
-# FROM golang:1.19-alpine3.16
 WORKDIR /app
 COPY . .
 RUN go build -o main main.go

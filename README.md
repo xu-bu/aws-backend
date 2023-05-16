@@ -4,6 +4,23 @@ This repository contains the codes of the [Backend Master Class](https://bit.ly/
 
 ![Backend master class](backend-master.png)
 
+# Config
+Create an app.env file with conten like:
+```
+ENVIRONMENT=development
+DB_DRIVER=postgres
+DB_SOURCE=postgresql://root:lZJNPyqFPazwqI18ZZ1T@simple-bank.ci0bw1ucyhkc.eu-west-2.rds.amazonaws.com:5432/simple_bank
+SERVER_ADDRESS=0.0.0.0:8080
+TOKEN_SYMMETRIC_KEY=e180396c270209eb17e49424fa3e4c27
+ACCESS_TOKEN_DURATION=15m
+REFRESH_TOKEN_DURATION=24h
+REDIS_ADDRESS=0.0.0.0:6379
+EMAIL_SENDER_NAME=Simple-Bank
+EMAIL_SENDER_ADDRESS=simplebanktest@gmail.com
+EMAIL_SENDER_PASSWORD=jekfcygyenvzekke
+```
+Notice not add any space in value, it will occur error.
+
 # Deploy and test locally
 Run 
 
@@ -67,27 +84,21 @@ After push, github will push image to ECR. Copy its URI to get [ECR image name].
 ## Auth
 ```
 docker login
+aws configure (Then input the access key and token of your aws user)
 aws ecr get-login-password | docker login --username AWS --password-stdin 889406091633.dkr.ecr.eu-west-2.amazonaws.com/simplebank
 ```
-Notice that the token could be expired, then we need to auth again.
+Notice that the token could be expired, then we need to auth again. After we complete config, we are able to see our account info via `aws sts get-caller-identity`. If want to change account, just run `aws configure` and reconfigure access key and token.
 ## Test ECR image
 ```
-docker run --name simplebank -p 8080:8080 -e GIN_MODE=release --env-file=./app.env --env-file=./app.env [ECR URI]
+docker run --name simplebank -p 8080:8080 -e GIN_MODE=release [ECR URI]
 ``` 
 
 # Deploy to kubernetes cluster
+Follow https://www.youtube.com/watch?v=TxnCMhYhqRU&list=PLy_6D98if3ULEtXtNSY_2qN21VCKgoQAE&index=31 to create roles, EKS and EKS node groups.
 
-- [Install nginx ingress controller](https://kubernetes.github.io/ingress-nginx/deploy/#aws):
+Follow https://www.youtube.com/watch?v=TxnCMhYhqRU&list=PLy_6D98if3ULEtXtNSY_2qN21VCKgoQAE&index=32.
 
-    ```bash
-    kubectl apply -f https://raw.githubusercontent.com/kubernetes/ingress-nginx/controller-v0.48.1/deploy/static/provider/aws/deploy.yaml
-    ```
-
-- [Install cert-manager](https://cert-manager.io/docs/installation/kubernetes/):
-
-    ```bash
-    kubectl apply -f https://github.com/jetstack/cert-manager/releases/download/v1.4.0/cert-manager.yaml
-    ```
+Remember to use admin power shell.
 
 # Simple bank service
 
